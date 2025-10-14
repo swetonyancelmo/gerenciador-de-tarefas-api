@@ -5,6 +5,7 @@ import com.swetonyancelmo.gerenciamento_de_tarefas.dtos.CriarTaskRequestDTO;
 import com.swetonyancelmo.gerenciamento_de_tarefas.dtos.TaskResponseDTO;
 import com.swetonyancelmo.gerenciamento_de_tarefas.models.Task;
 import com.swetonyancelmo.gerenciamento_de_tarefas.services.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,17 +41,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> buscarTarefaPorId(@PathVariable Long id) {
-        try {
-            Task task = taskService.buscarPorId(id);
-            return ResponseEntity.ok(new TaskResponseDTO(task));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+    public ResponseEntity<TaskResponseDTO> buscarTarefaPorId(@PathVariable Long id) throws Exception {
+        Task task = taskService.buscarPorId(id);
+        return ResponseEntity.ok(convertToResponseDTO(task));
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> criarTarefa(@RequestBody CriarTaskRequestDTO dto) {
+    public ResponseEntity<TaskResponseDTO> criarTarefa(@Valid @RequestBody CriarTaskRequestDTO dto) {
         Task novaTarefa = taskService.criarTarefa(dto);
         return new ResponseEntity<>(convertToResponseDTO(novaTarefa), HttpStatus.CREATED);
     }
