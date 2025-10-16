@@ -2,6 +2,7 @@ package com.swetonyancelmo.gerenciamento_de_tarefas.controller;
 
 import com.swetonyancelmo.gerenciamento_de_tarefas.dtos.CriarUserRequestDTO;
 import com.swetonyancelmo.gerenciamento_de_tarefas.dtos.UserResponseDTO;
+import com.swetonyancelmo.gerenciamento_de_tarefas.mappers.UserMapper;
 import com.swetonyancelmo.gerenciamento_de_tarefas.models.User;
 import com.swetonyancelmo.gerenciamento_de_tarefas.services.UserService;
 import jakarta.validation.Valid;
@@ -20,33 +21,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    private UserResponseDTO convertToResponseDTO(User user){
-        return new UserResponseDTO(
-                user.getId(),
-                user.getNome(),
-                user.getEmail()
-        );
-    }
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> listarTodosUsuarios() {
-        List<User> usuarios = userService.listarTodos();
-        List<UserResponseDTO> dtos = usuarios.stream()
-                .map(this::convertToResponseDTO)
+        List<UserResponseDTO> dtos = userService.listarTodos()
+                .stream()
+                .map(userMapper::toResponseDTO)
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> buscarUsuarioPorId(@PathVariable Long id) {
         User user = userService.buscarPorId(id);
-        return ResponseEntity.ok(convertToResponseDTO(user));
+        return ResponseEntity.ok(userMapper.toResponseDTO(user));
     }
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> criarNovoUsuario(@Valid @RequestBody CriarUserRequestDTO dto){
         User novoUsuario = userService.criarUsuario(dto);
-        return new ResponseEntity<>(convertToResponseDTO(novoUsuario), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toResponseDTO(novoUsuario), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
