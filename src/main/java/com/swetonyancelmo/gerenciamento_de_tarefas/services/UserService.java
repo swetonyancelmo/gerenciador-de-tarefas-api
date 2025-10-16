@@ -37,6 +37,15 @@ public class UserService {
         return userRepository.save(novoUsuario);
     }
 
+    public User atualizarUsuario(Long id, CriarUserRequestDTO dto){
+        User usuarioExistente = userRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com o ID \" + id + \" não encontrado."));
+
+        userMapper.updateEntityFromDto(dto, usuarioExistente);
+
+        return userRepository.save(usuarioExistente);
+    }
+
     public void deletarUsuarioPorId(Long id){
         userRepository.deleteById(id);
     }
