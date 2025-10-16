@@ -24,4 +24,16 @@ public class UserMapper {
         user.setSenha(dto.getSenha());
         return user;
     }
+
+    public void updateEntityFromDto(CriarUserRequestDTO dto, User existingUser){
+        if (dto.getNome() != null && !dto.getNome().isBlank()) {
+            existingUser.setNome(dto.getNome());
+        }
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            existingUser.setEmail(dto.getEmail());
+        }
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            existingUser.setSenha(dto.getSenha());
+        }
+    }
 }
