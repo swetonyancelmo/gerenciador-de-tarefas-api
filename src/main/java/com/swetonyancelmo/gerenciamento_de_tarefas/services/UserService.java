@@ -3,6 +3,7 @@ package com.swetonyancelmo.gerenciamento_de_tarefas.services;
 import com.swetonyancelmo.gerenciamento_de_tarefas.dtos.CriarUserRequestDTO;
 import com.swetonyancelmo.gerenciamento_de_tarefas.exceptions.EmailJaCadastradoException;
 import com.swetonyancelmo.gerenciamento_de_tarefas.exceptions.RecursoNaoEncontradoException;
+import com.swetonyancelmo.gerenciamento_de_tarefas.mappers.UserMapper;
 import com.swetonyancelmo.gerenciamento_de_tarefas.models.User;
 import com.swetonyancelmo.gerenciamento_de_tarefas.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
     public List<User> listarTodos(){
         return userRepository.findAll();
     }
@@ -26,14 +30,11 @@ public class UserService {
     }
 
     public User criarUsuario(CriarUserRequestDTO dto){
-        User user = new User();
         if(userRepository.existsByEmail(dto.getEmail())) {
             throw new EmailJaCadastradoException("O email informado já está cadastrado.");
         }
-        user.setNome(dto.getNome());
-        user.setEmail(dto.getEmail());
-        user.setSenha((dto.getSenha()));
-        return userRepository.save(user);
+        User novoUsuario = userMapper.toEntity(dto);
+        return userRepository.save(novoUsuario);
     }
 
     public void deletarUsuarioPorId(Long id){
