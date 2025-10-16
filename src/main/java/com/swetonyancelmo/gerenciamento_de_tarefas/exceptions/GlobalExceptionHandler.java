@@ -43,4 +43,17 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
     }
+
+    @ExceptionHandler(EmailJaCadastradoException.class)
+    public ResponseEntity<ApiErrorResponse> handleEmailJaCadastradoException(EmailJaCadastradoException ex){
+        List<String> errors = List.of(ex.getMessage());
+
+        ApiErrorResponse apiError = new ApiErrorResponse(
+                "Email já cadastrado",
+                errors,
+                HttpStatus.CONFLICT.value()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
+    }
 }
