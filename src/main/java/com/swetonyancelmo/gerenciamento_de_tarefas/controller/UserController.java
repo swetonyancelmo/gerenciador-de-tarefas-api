@@ -46,6 +46,13 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toResponseDTO(novoUsuario), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> atualizarUsuario(@PathVariable Long id,
+                                                            @Valid @RequestBody CriarUserRequestDTO dto){
+        User usuarioAtualizado = userService.atualizarUsuario(id, dto);
+        return ResponseEntity.ok(userMapper.toResponseDTO(usuarioAtualizado));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<UserResponseDTO> deletarUsuario(@PathVariable Long id){
         userService.deletarUsuarioPorId(id);
