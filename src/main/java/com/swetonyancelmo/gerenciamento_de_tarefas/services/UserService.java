@@ -32,16 +32,8 @@ public class UserService {
         }
         user.setNome(dto.getNome());
         user.setEmail(dto.getEmail());
+        user.setSenha((dto.getSenha()));
         return userRepository.save(user);
-    }
-
-    public User atualizarUsuario(Long id, User user){
-        User usuarioExistente = userRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário com o ID \" + id + \" não encontrado."));
-        usuarioExistente.setNome(user.getNome());
-        usuarioExistente.setEmail(user.getSenha());
-
-        return userRepository.save(usuarioExistente);
     }
 
     public void deletarUsuarioPorId(Long id){
